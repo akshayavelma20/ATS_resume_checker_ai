@@ -1,0 +1,22 @@
+SKILLS = [
+    "python",
+    "java",
+    "c++",
+    "fastapi",
+    "django",
+    "flask",
+    "docker",
+    "kubernetes",
+    "aws",
+    "azure",
+    "gcp",
+    "sql",
+    "postgresql",
+    "mysql",
+    "mongodb",
+    "react",
+    "node",
+    "javascript",
+    "typescript",
+]
+
