@@ -13,13 +13,7 @@ from PyPDF2 import PdfReader
 import spacy
 nlp = spacy.load("en_core_web_sm")
 
-# ===== Embeddings =====
-from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
-
-model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
-
-# ===== LLM (Local - Ollama, optional) =====
+# ===== LLM (Local - optional) =====
 import requests
 
 # ================= APP =================
@@ -64,11 +58,14 @@ def extract_keywords(text):
     return list(keywords)
 
 
-def compute_similarity(text1, text2):
-    emb1 = model.encode([text1])
-    emb2 = model.encode([text2])
-    score = cosine_similarity(emb1, emb2)[0][0]
-    return float(score)
+# ✅ SIMPLE LIGHTWEIGHT SIMILARITY
+def compute_similarity(resume_words, jd_words):
+    if len(jd_words) == 0:
+        return 0
+
+    common = resume_words.intersection(jd_words)
+    score = len(common) / len(jd_words)
+    return score
 
 
 def generate_local_summary(score, matched, missing):
@@ -152,8 +149,8 @@ async def match_resume(
     missing = list(jd_set - resume_set)
     extra = list(resume_set - jd_set)
 
-    # ===== Similarity =====
-    sim_score = compute_similarity(resume_clean, jd_clean)
+    # ✅ NEW SIMILARITY
+    sim_score = compute_similarity(resume_set, jd_set)
     final_score = int(sim_score * 100)
 
     # ===== Level =====
